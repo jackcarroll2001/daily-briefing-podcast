@@ -617,6 +617,12 @@ def update_feed() -> None:
         "AI-generated daily briefing covering Gold Coast weather, "
         "calendar, global markets, commodities, and world news."
     )
+    fg.podcast.itunes_image(f"{BASE_URL}/podcast-cover.jpg")
+    fg.image(
+        url=f"{BASE_URL}/podcast-cover.jpg",
+        title="The Daily Briefing",
+        link=BASE_URL,
+    )
 
     # Find all existing episodes
     episode_files = sorted(EPISODES_DIR.glob("episode-*.mp3"), reverse=True)
