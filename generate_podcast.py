@@ -548,6 +548,7 @@ def generate_audio(script: str, output_path: Path) -> None:
             voice="onyx",  # Deep, authoritative voice good for news/briefings
             input=chunk,
             response_format="mp3",
+            speed=1.15,  # Slightly faster than default
         )
 
         # Save chunk to temp file
