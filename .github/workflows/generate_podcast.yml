@@ -1,0 +1,50 @@
+name: Generate Daily Briefing Podcast
+
+on:
+  schedule:
+    # 4:30am AEST = 6:30pm UTC (previous day) during AEST
+    # 4:30am AEST = 7:30pm UTC (previous day) during AEDT (daylight saving)
+    # Using 18:30 UTC to target ~4:30am AEST year-round (adjust if needed)
+    - cron: '30 18 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate podcast
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          GOOGLE_CALENDAR_CREDENTIALS: ${{ secrets.GOOGLE_CALENDAR_CREDENTIALS }}
+          GOOGLE_CALENDAR_TOKEN: ${{ secrets.GOOGLE_CALENDAR_TOKEN }}
+          PODCAST_BASE_URL: ${{ vars.PODCAST_BASE_URL }}
+        run: python generate_podcast.py
+
+      - name: Commit and push new episode
+        run: |
+          git config user.name "Podcast Bot"
+          git config user.email "bot@daily-briefing.local"
+          git add episodes/ feed.xml
+          git diff --staged --quiet || (git commit -m "Add episode for $(date -u +%Y-%m-%d)" && git push)
