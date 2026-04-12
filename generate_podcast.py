@@ -49,7 +49,7 @@ EPISODE_PATH = EPISODES_DIR / EPISODE_FILENAME
 
 BASE_URL = os.environ.get(
     "PODCAST_BASE_URL",
-    "https://YOUR_GITHUB_USERNAME.github.io/daily-briefing-podcast",
+    "https://jackcarroll2001.github.io/daily-briefing-podcast",
 )
 
 # Target ~2500-3000 words for 15-20 minute podcast at natural pace
