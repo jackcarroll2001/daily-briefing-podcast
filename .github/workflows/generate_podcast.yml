@@ -2,10 +2,9 @@ name: Generate Daily Briefing Podcast
 
 on:
   schedule:
-    # 4:30am AEST = 6:30pm UTC (previous day) during AEST
-    # 4:30am AEST = 7:30pm UTC (previous day) during AEDT (daylight saving)
-    # Using 18:30 UTC to target ~4:30am AEST year-round (adjust if needed)
-    - cron: '30 18 * * *'
+    # 3:30am AEST = 5:30pm UTC (previous day)
+    # Running at 3:30am to ensure episode is ready by 5am even with GitHub delays
+    - cron: '30 17 * * *'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
