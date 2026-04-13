@@ -612,7 +612,8 @@ def update_feed() -> None:
     )
     fg.language("en-au")
     fg.podcast.itunes_category("News")
-    fg.podcast.itunes_author("Daily Briefing Bot")
+    fg.podcast.itunes_author("Jack Carroll")
+    fg.podcast.itunes_owner("Jack Carroll", "jackcarroll026@gmail.com")
     fg.podcast.itunes_explicit("no")
     fg.podcast.itunes_summary(
         "AI-generated daily briefing covering Gold Coast weather, "
