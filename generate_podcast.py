@@ -436,64 +436,62 @@ def fetch_forex() -> str:
 # ---------------------------------------------------------------------------
 
 
-def generate_script(weather: str, calendar: str, markets: str, commodities: str,
+def generate_script(weather: str, markets: str, commodities: str,
                     forex: str, news: str) -> str:
     """Use Claude to write the podcast script."""
     client = anthropic.Anthropic()
 
-    prompt = f"""You are the host of "The Daily Briefing", a professional yet conversational
-daily podcast for an Australian listener based on the Gold Coast. Your name is not important -
-you never introduce yourself by name. Your style is confident, knowledgeable, and engaging -
-like a smart friend who reads everything so they don't have to.
+    prompt = f"""You are the host of "The Daily Briefing", a daily podcast for an Australian
+listener based on the Gold Coast. You never introduce yourself by name. Your style is direct,
+confident, and efficient - you deliver information clearly without unnecessary commentary or filler.
 
 Write a complete podcast script for today's episode. The script should be {TARGET_WORD_COUNT} words
 (this is critical - it needs to be 15-20 minutes when read aloud at a natural pace).
 
-IMPORTANT FORMATTING RULES:
+CRITICAL STYLE RULES:
+- Be direct and concise. No fluff, no filler, no padding.
+- Do NOT add your own opinions, analysis, or commentary on news stories. Just report what happened.
+- Do NOT use phrases like "it's worth noting", "interestingly", "it remains to be seen", "time will tell",
+  "keep an eye on", "it's important to remember", or similar filler.
+- Do NOT speculate on what things "could mean" or "might suggest".
 - Write ONLY the spoken words. No stage directions, no [pause], no (laughs), no sound effects.
 - No headings, no markdown, no asterisks, no formatting characters.
-- Write naturally flowing speech with clear transitions between segments.
 - Use conversational Australian English (not overly formal, but professional).
 - Numbers should be written as they'd be spoken (e.g., "twenty-three point five percent" not "23.5%").
 - For stock prices, round appropriately and speak naturally.
+- Transitions between sections should be quick and clean - one sentence max.
 
 STRUCTURE (follow this exact order):
 
-1. OPENING & DATE: Brief, energetic opening. State today's date ({DATE_HUMAN}).
+1. OPENING & DATE: Brief opening. State today's date ({DATE_HUMAN}). Two sentences max.
 
-2. WEATHER: Natural conversational summary of today's Gold Coast weather. What to expect,
-   what to wear, whether to grab an umbrella. Keep it brief but useful (~30 seconds).
+2. WEATHER: Gold Coast weather in 2-3 sentences. Temperature range, conditions, rain or no rain. That's it.
 
-3. CALENDAR: What's on today. If no events, briefly note it's a clear day. (~30 seconds)
-
-4. MARKETS OVERVIEW: This is the meat of the financial section (4-5 minutes total).
-   Start with the Australian market from the previous trading day - how the ASX performed,
-   key movers and why they moved if apparent.
-   Then US markets - S&P 500, Dow, NASDAQ performance and notable movers.
+3. MARKETS OVERVIEW: This is the core financial section (5-6 minutes total).
+   Start with the Australian market from the previous trading day - ASX 200 performance,
+   then the key movers with percentage moves.
+   Then US markets - S&P 500, Dow, NASDAQ numbers and notable movers.
    Then UK - FTSE and notable movers.
    Then Asian markets - Nikkei, Hang Seng, Shanghai and notable movers.
-   For each market, give the high-level index movement first, then drill into the interesting
-   individual stock stories. Try to connect themes across markets where relevant.
+   For each market, give the index movement first, then the key individual stock moves.
+   State the facts - what moved and by how much. Connect themes across markets where the data supports it.
 
-5. COMMODITIES: Gold, Silver, Oil and other commodities. Note any significant moves and
-   briefly explain what's driving them. (~2 minutes)
+4. COMMODITIES: Gold, Silver, Oil and other commodities. Prices and percentage moves. (~2 minutes)
 
-6. FOREX: Brief AUD movements against major currencies. (~30 seconds)
+5. FOREX: AUD movements against major currencies. Quick and factual. (~30 seconds)
 
-7. WORLD NEWS: This is the second major section (5-10 minutes). Cover the most important
-   world events and developments. Group related stories together. Provide context and analysis,
-   not just headlines. Cover a mix of geopolitical, economic, and significant social/tech stories.
-   Prioritise stories relevant to Australia and the Asia-Pacific region.
+6. WORLD NEWS: Major section (5-8 minutes). Cover the most important world events.
+   Report what happened - the facts, the developments, the key details.
+   Do NOT add opinion or editorial commentary. No "this is significant because" or "this raises questions about".
+   Just deliver the news clearly. Group related stories together.
+   Cover geopolitical, economic, and significant stories with priority to Australia and Asia-Pacific.
 
-8. CLOSING: Brief, forward-looking close. Mention anything to watch for today. Sign off warmly.
+7. CLOSING: One or two sentence sign off. Keep it brief.
 
 Here is today's data:
 
 === WEATHER ===
 {weather}
-
-=== CALENDAR ===
-{calendar}
 
 === MARKET DATA ===
 {markets}
@@ -681,10 +679,6 @@ def main():
     weather = fetch_weather()
     print(weather)
 
-    print("\nFetching calendar...")
-    calendar = fetch_calendar()
-    print(calendar)
-
     print("\nFetching market data (this may take a minute)...")
     markets = fetch_market_data()
     print(markets)
@@ -703,7 +697,7 @@ def main():
 
     # Generate script
     print("\nGenerating podcast script via Claude...")
-    script = generate_script(weather, calendar, markets, commodities, forex, news)
+    script = generate_script(weather, markets, commodities, forex, news)
 
     # Save script for reference
     script_path = EPISODES_DIR / f"script-{DATE_STR}.txt"
