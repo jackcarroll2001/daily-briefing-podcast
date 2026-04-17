@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Daily Briefing</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0f0f; color: #f0f0f0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+    .card { max-width: 480px; width: 100%; text-align: center; }
+    img { width: 160px; height: 160px; border-radius: 16px; margin-bottom: 1.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.4rem; }
+    p { color: #aaa; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; }
+    .links { display: flex; flex-direction: column; gap: 0.75rem; }
+    a.btn { display: block; padding: 0.75rem 1.25rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s; }
+    a.btn:hover { opacity: 0.85; }
+    .rss { background: #f26522; color: #fff; }
+    .spotify { background: #1db954; color: #fff; }
+    .episode { background: #1e1e1e; color: #f0f0f0; border: 1px solid #333; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="podcast-cover.jpg" alt="The Daily Briefing" />
+    <h1>The Daily Briefing</h1>
+    <p>Your personalised morning briefing — markets, commodities, forex, and world news. Generated fresh every day with AI.</p>
+    <div class="links">
+      <a class="btn rss" href="feed.xml">RSS Feed</a>
+      <a class="btn spotify" href="https://open.spotify.com/show/" target="_blank">Listen on Spotify</a>
+      <a class="btn episode" id="latest" href="feed.xml">Latest Episode</a>
+    </div>
+  </div>
+  <script>
+    fetch('feed.xml')
+      .then(r => r.text())
+      .then(xml => {
+        const doc = new DOMParser().parseFromString(xml, 'text/xml');
+        const item = doc.querySelector('item');
+        if (!item) return;
+        const url = item.querySelector('enclosure')?.getAttribute('url');
+        const title = item.querySelector('title')?.textContent;
+        if (url && title) {
+          const a = document.getElementById('latest');
+          a.href = url;
+          a.textContent = title.replace('Daily Briefing - ', 'Latest: ');
+        }
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
